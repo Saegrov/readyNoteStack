@@ -6,6 +6,9 @@ lib-cov
 *.out
 *.pid
 *.gz
+*.iml
+.idea
+node_modules
 
 pids
 logs
