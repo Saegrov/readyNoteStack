@@ -48,7 +48,11 @@ exports.update = function(req, res){
     Project.update({_id: req.params.project},
         req.body,
         function(err){
-            res.send(500, 'Caught exception: ' + err)
+            if (err){
+                res.send(500, "Caught exception on model update: "+ err)
+            } else {
+                res.send(req.body);
+            }
         })
 }
 
