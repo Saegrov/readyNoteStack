@@ -3,7 +3,8 @@ var express = require('express'),
     app = express(),
     path = require('path'),
     mongoose = require('mongoose'),
-    port = 8000
+    port = 8000,
+    projects, issues, comments
 
 mongoose.connect('mongodb://localhost/myDB');
 
@@ -13,7 +14,13 @@ app.configure('development', function(){
     app.use(express.static(path.join(__dirname, 'public')));
 })
 
-app.resource('projects', require('./resources/project'))
+projects = app.resource('projects', require('./resources/project'))
+issues = app.resource('issues', require('./resources/issue'))
+comments = app.resource('comments', require('./resources/comment'))
+
+projects.add(issues)
+issues.add(comments)
+
 
 app.listen(port)
 
