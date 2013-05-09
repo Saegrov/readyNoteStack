@@ -1,4 +1,5 @@
-var Issue = require('./schemas').Issue
+var Project = require('./schemas').Project,
+    Issue = require('./schemas').Issue
 require('sugar')
 
 exports.index = function(req, res){
@@ -17,14 +18,17 @@ exports.index = function(req, res){
 
 exports.create = function(req, res){
     console.log("Got create[POST] request")
-    var issue = new Issue(convertToMongodbId(req.body))
-    issue.save(function(err, doc){
-        if(!doc){
-            res.send(500, "Caught exception on model save: "+ err)
-        } else {
-            res.send(convertToRegularId(doc.toObject()))
-        }
+    Project.findById(req.params.project, function(err, project){
+        var issue = new Issue(convertToMongodbId(req.body))
+        issue.save(function(err, doc){
+            if(!doc){
+                res.send(500, "Caught exception on model save: "+ err)
+            } else {
+                res.send(convertToRegularId(doc.toObject()))
+            }
 
+        })
+        project.issues.push(issue)
     })
 }
 

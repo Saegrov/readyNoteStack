@@ -1,4 +1,6 @@
-var Comment = require('./schemas').Comment
+var Project = require('./schemas').Project,
+    Issue = require('./schemas').Issue,
+    Comment = require('./schemas').Comment
 require('sugar')
 
 exports.index = function(req, res){
@@ -17,14 +19,18 @@ exports.index = function(req, res){
 
 exports.create = function(req, res){
     console.log("Got create[POST] request")
-    var issue = new Comment(convertToMongodbId(req.body))
-    issue.save(function(err, doc){
-        if(!doc){
-            res.send(500, "Caught exception on model save: "+ err)
-        } else {
-            res.send(convertToRegularId(doc.toObject()))
-        }
-
+    Project.findById(req.params.project, function(err, project){
+        Issue.findById(req.params.project, function(err, issue){
+            var comment = new Comment(convertToMongodbId(req.body))
+            comment.save(function(err, doc){
+                if(!doc){
+                    res.send(500, "Caught exception on model save: "+ err)
+                } else {
+                    res.send(convertToRegularId(doc.toObject()))
+                }
+            })
+            issue.comments.push(comment)
+        })
     })
 }
 
