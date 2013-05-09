@@ -69,7 +69,7 @@ exports.destroy = function(req, res){
                     if (err){
                         res.send(500, "Caught exception on model delete #2: "+ err)
                     } else {
-                        res.send('project deleted' + project);
+                        res.send(project);
                     }
                 })
             }
