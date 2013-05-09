@@ -1,19 +1,45 @@
 var mongoose = require('mongoose'),
-    Schema = mongoose.Schema
+    Schema = mongoose.Schema,
+    ProjectSchema, IssueSchema, CommentSchema,
+    Project, Issue, Comment
 
-exports.Comment = mongoose.model('Comment', new Schema({
-    cratedDate  :  { type: Date, default: Date.now },
-    text:  { type: String }
-}));
+require('sugar')
 
-exports.Issue = mongoose.model('Issue', new Schema({
-    name  :  { type: String },
-    cratedDate  :  { type: Date, default: Date.now },
-    comments:  [{ type: Schema.ObjectId, ref: 'Comment' }]
-}));
-
-exports.Project = mongoose.model('Project', new Schema({
+ProjectSchema = new Schema({
     name  :  { type: String },
     cratedDate  :  { type: Date, default: Date.now },
     issues:  [{ type: Schema.ObjectId, ref: 'Issue' }]
-}));
+})
+
+IssueSchema = new Schema({
+    name  :  { type: String },
+    cratedDate  :  { type: Date, default: Date.now },
+    comments:  [{ type: Schema.ObjectId, ref: 'Comment' }]
+})
+
+CommentSchema = new Schema({
+    cratedDate  :  { type: Date, default: Date.now },
+    text:  { type: String }
+})
+
+IssueSchema.pre('remove', function(next){
+    this.comments.each(function(id){
+        Comment.findById(id).remove(function(err){
+            console.log("Error when removing comment("+ id +") from issue("+ this._id +");", err)
+        })
+    })
+    next()
+})
+
+ProjectSchema.pre('remove', function(next){
+    this.issues.each(function(id){
+        Issue.findById(id).remove(function(err){
+            console.log("Error when removing issue("+ id +")", err)
+        })
+    })
+    next()
+})
+
+exports.Comment = Comment = mongoose.model('Comment', CommentSchema)
+exports.Issue = Issue = mongoose.model('Issue', IssueSchema)
+exports.Project = Project = mongoose.model('Project', ProjectSchema)
