@@ -27,7 +27,9 @@ exports.create = function(req, res){
                     res.send(500, "Caught exception on model save: "+ err)
                 } else {
                     issue.comments.push(comment)
-                    res.send(convertToRegularId(doc.toObject()))
+                    issue.save(function(err, issue){
+                        res.send(convertToRegularId(doc.toObject()))
+                    })
                 }
             })
         })
