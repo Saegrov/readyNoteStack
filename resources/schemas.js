@@ -5,6 +5,8 @@ var mongoose = require('mongoose'),
 
 require('sugar')
 
+
+//Shemas
 ProjectSchema = new Schema({
     name  :  { type: String },
     cratedDate  :  { type: Date, default: Date.now },
@@ -22,24 +24,44 @@ CommentSchema = new Schema({
     text:  { type: String }
 })
 
-IssueSchema.pre('remove', function(next){
-    this.comments.each(function(id){
-        Comment.findById(id).remove(function(err){
-            console.log("Error when removing comment("+ id +") from issue("+ this._id +");", err)
-        })
-    })
-    next()
-})
 
+//Pre statements
 ProjectSchema.pre('remove', function(next){
     this.issues.each(function(id){
         Issue.findById(id).remove(function(err){
-            console.log("Error when removing issue("+ id +")", err)
+            if(err){
+                console.log("Error when removing issue("+ id +")", err)
+            }
         })
     })
     next()
 })
 
+IssueSchema.pre('remove', function(next){
+    this.comments.each(function(id){
+        Comment.findById(id).remove(function(err){
+            if(err){
+                console.log("Error when removing comment("+ id +") from issue("+ this._id +");", err)
+            }
+        })
+    })
+    next()
+})
+
+
+//Post statements
+ProjectSchema.post('remove', function(model){
+    console.log("Removed project:", model)
+})
+IssueSchema.post('remove', function(model){
+    console.log("Removed issue:", model)
+})
+CommentSchema.post('remove', function(model){
+    console.log("Removed comment:", model)
+})
+
+
+//Exports
 exports.Comment = Comment = mongoose.model('Comment', CommentSchema)
 exports.Issue = Issue = mongoose.model('Issue', IssueSchema)
 exports.Project = Project = mongoose.model('Project', ProjectSchema)
