@@ -24,11 +24,10 @@ exports.create = function(req, res){
             if(!doc){
                 res.send(500, "Caught exception on model save: "+ err)
             } else {
+                project.issues.push(issue)
                 res.send(convertToRegularId(doc.toObject()))
             }
-
         })
-        project.issues.push(issue)
     })
 }
 
