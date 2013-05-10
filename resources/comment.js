@@ -20,14 +20,14 @@ exports.index = function(req, res){
 exports.create = function(req, res){
     console.log("Got create[POST] request")
     Project.findById(req.params.project, function(err, project){
-        Issue.findById(req.params.issue, function(err, issue){
+        Comment.findById(req.params.comment, function(err, comment){
             var comment = new Comment(convertToMongodbId(req.body))
             comment.save(function(err, doc){
                 if(!doc){
                     res.send(500, "Caught exception on model save: "+ err)
                 } else {
-                    issue.comments.push(comment)
-                    issue.save(function(err, issue){
+                    comment.comments.push(comment)
+                    comment.save(function(err, comment){
                         res.send(convertToRegularId(doc.toObject()))
                     })
                 }
@@ -38,14 +38,14 @@ exports.create = function(req, res){
 
 exports.show = function(req, res){
     console.log("Got show[GET] request")
-    Comment.findById(req.params.issue, function(err, issue){
+    Comment.findById(req.params.comment, function(err, comment){
         if (err){
             res.send(500, 'Caught exception: ' + err)
         } else {
-            if(!issue){
-                res.send(404, "Could not find issue with ID: "+req.params.issue)
+            if(!comment){
+                res.send(404, "Could not find comment with ID: "+req.params.comment)
             } else {
-                res.send(convertToRegularId(issue.toObject()))
+                res.send(convertToRegularId(comment.toObject()))
             }
         }
     })
@@ -53,7 +53,7 @@ exports.show = function(req, res){
 
 exports.update = function(req, res){
     console.log("Got update[PUT] request")
-    Comment.update({_id: req.params.issue},
+    Comment.update({_id: req.params.comment},
         req.body,
         function(err){
             res.send(500, 'Caught exception: ' + err)
@@ -62,18 +62,18 @@ exports.update = function(req, res){
 
 exports.destroy = function(req, res){
     console.log("Got destroy[delete] request")
-    Comment.findById(req.params.comment, function(err, issue){
+    Comment.findById(req.params.comment, function(err, comment){
         if (err){
             res.send(500, "Caught exception on model delete: "+ err)
         } else {
-            if(!issue){
-                res.send(404, "Could not find issue with ID: "+req.params.issue)
+            if(!comment){
+                res.send(404, "Could not find comment with ID: "+req.params.comment)
             } else {
-                issue.remove(function(err){
+                comment.remove(function(err){
                     if (err){
                         res.send(500, "Caught exception on model delete #2: "+ err)
                     } else {
-                        res.send(issue);
+                        res.send(comment);
                     }
                 })
             }
