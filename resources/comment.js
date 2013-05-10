@@ -20,7 +20,7 @@ exports.index = function(req, res){
 exports.create = function(req, res){
     console.log("Got create[POST] request")
     Project.findById(req.params.project, function(err, project){
-        Issue.findById(req.params.project, function(err, issue){
+        Issue.findById(req.params.issue, function(err, issue){
             var comment = new Comment(convertToMongodbId(req.body))
             comment.save(function(err, doc){
                 if(!doc){
