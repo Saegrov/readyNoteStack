@@ -53,7 +53,11 @@ exports.update = function(req, res){
     Comment.update({_id: req.params.comment},
         req.body,
         function(err){
-            res.send(500, 'Caught exception: ' + err)
+            if(err){
+                res.send(500, 'Caught exception: ' + err)
+            } else {
+                res.send(req.body)
+            }
         })
 }
 

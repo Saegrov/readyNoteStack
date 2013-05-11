@@ -51,7 +51,11 @@ exports.update = function(req, res){
     Issue.update({_id: req.params.issue},
         req.body,
         function(err){
-            res.send(500, 'Caught exception: ' + err)
+            if(err){
+                res.send(500, 'Caught exception: ' + err)
+            } else {
+                res.send(req.body)
+            }
         })
 }
 
