@@ -23,7 +23,7 @@ exports.create = function(req, res){
         Comment.findById(req.params.comment, function(err, comment){
             var comment = new Comment(convertToMongodbId(req.body))
             comment.save(function(err, doc){
-                if(!doc){
+                if(err){
                     res.send(500, "Caught exception on model save: "+ err)
                 } else {
                     res.send(convertToRegularId(doc.toObject()))

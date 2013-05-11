@@ -21,7 +21,7 @@ exports.create = function(req, res){
     Project.findById(req.params.project, function(err, project){
         var issue = new Issue(convertToMongodbId(req.body))
         issue.save(function(err, doc){
-            if(!doc){
+            if(err){
                 res.send(500, "Caught exception on model save: "+ err)
             } else {
                 project.issues.push(issue)

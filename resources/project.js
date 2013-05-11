@@ -19,7 +19,7 @@ exports.create = function(req, res){
     console.log("Got create[POST] request")
     var project = new Project(convertToMongodbId(req.body))
     project.save(function(err, doc){
-        if(!doc){
+        if(err){
             res.send(500, "Caught exception on model save: "+ err)
         } else {
             res.send(convertToRegularId(doc.toObject()))
