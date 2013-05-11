@@ -3,14 +3,12 @@ var Project = require('./schemas').Project,
 require('sugar')
 
 exports.index = function(req, res){
-    console.log("Got index[GET] request")
-    Issue.find(function(err, docs){
-        if (err){
-            res.send(500, "Caught exception on index: "+ err)
-        }
-        else{
-            res.send(docs.map(function(doc){
-                return convertToRegularId(doc.toObject())
+    Project.findById(req.params.project).populate('issues').exec(function(err, project){
+        if(err){
+            res.send(500, "Caught exception on getting index: "+ err)
+        } else {
+            res.send(project.issues.map(function(issue){
+                return convertToRegularId(issue.toObject())
             }))
         }
     })

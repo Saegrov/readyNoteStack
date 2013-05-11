@@ -6,8 +6,7 @@ exports.index = function(req, res){
     Project.find(function(err, docs){
         if (err){
             res.send(500, "Caught exception on index: "+ err)
-        }
-        else{
+        } else {
             res.send(docs.map(function(doc){
                 return convertToRegularId(doc.toObject())
             }))

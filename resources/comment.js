@@ -5,13 +5,12 @@ require('sugar')
 
 exports.index = function(req, res){
     console.log("Got index[GET] request")
-    Comment.find(function(err, docs){
+    Issue.findById(req.params.issue).populate('comments').exec(function(err, issue){
         if (err){
             res.send(500, "Caught exception on index: "+ err)
-        }
-        else{
-            res.send(docs.map(function(doc){
-                return convertToRegularId(doc.toObject())
+        } else {
+            res.send(issue.comments.map(function(comment){
+                return convertToRegularId(comment.toObject())
             }))
         }
     })
