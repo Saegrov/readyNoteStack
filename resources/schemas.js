@@ -29,11 +29,15 @@ CommentSchema = new Schema({
 ProjectSchema.pre('remove', function(next){
     this.issues.each(function(id){
         Issue.findById(id,function(err, issue){
-            issue.remove(function(err){
-                if(err){
-                    console.log("Error when removing issue("+ id +") from project("+ this._id +");", err)
-                }
-            })
+            if(err){
+                console.log("Error when getting issue with id "+ id +": "+ err)
+            } else {
+                issue.remove(function(err){
+                    if(err){
+                        console.log("Error when removing issue("+ id +") from project("+ this._id +");", err)
+                    }
+                })
+            }
         })
     })
     next()
@@ -42,11 +46,15 @@ ProjectSchema.pre('remove', function(next){
 IssueSchema.pre('remove', function(next){
     this.comments.each(function(id){
         Comment.findById(id,function(err, comments){
-            comments.remove(function(err){
-                if(err){
-                    console.log("Error when removing comment("+ id +") from issue("+ this._id +");", err)
-                }
-            })
+            if(err){
+                console.log("Error when getting comment with id "+ id +": "+ err)
+            } else {
+                comments.remove(function(err){
+                    if(err){
+                        console.log("Error when removing comment("+ id +") from issue("+ this._id +");", err)
+                    }
+                })
+            }
         })
     })
     next()
