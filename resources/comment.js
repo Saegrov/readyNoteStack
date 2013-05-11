@@ -18,16 +18,17 @@ exports.index = function(req, res){
 
 exports.create = function(req, res){
     console.log("Got create[POST] request")
-    Project.findById(req.params.project, function(err, project){
-        Comment.findById(req.params.comment, function(err, comment){
-            var comment = new Comment(convertToMongodbId(req.body))
-            comment.save(function(err, doc){
-                if(err){
-                    res.send(500, "Caught exception on model save: "+ err)
-                } else {
+    Issue.findById(req.params.issue, function(err, issue){
+        var comment = new Comment(convertToMongodbId(req.body))
+        comment.save(function(err, doc){
+            if(err){
+                res.send(500, "Caught exception on model save: "+ err)
+            } else {
+                issue.comments.push(comment)
+                issue.save(function(err, project){
                     res.send(convertToRegularId(doc.toObject()))
-                }
-            })
+                })
+            }
         })
     })
 }
