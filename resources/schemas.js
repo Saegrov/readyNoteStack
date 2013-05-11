@@ -32,11 +32,15 @@ ProjectSchema.pre('remove', function(next){
             if(err){
                 console.log("Error when getting issue with id "+ id +": "+ err)
             } else {
-                issue.remove(function(err){
-                    if(err){
-                        console.log("Error when removing issue("+ id +") from project("+ this._id +");", err)
-                    }
-                })
+                if(!issue){
+                    console.log("Could not find issue "+ id +"for deletion!")
+                } else {
+                    issue.remove(function(err){
+                        if(err){
+                            console.log("Error when removing issue("+ id +") from project("+ this._id +");", err)
+                        }
+                    })
+                }
             }
         })
     })
@@ -49,11 +53,15 @@ IssueSchema.pre('remove', function(next){
             if(err){
                 console.log("Error when getting comment with id "+ id +": "+ err)
             } else {
-                comments.remove(function(err){
-                    if(err){
-                        console.log("Error when removing comment("+ id +") from issue("+ this._id +");", err)
-                    }
-                })
+                if(!issue){
+                    console.log("Could not find comment "+ id +"for deletion!")
+                } else {
+                    comments.remove(function(err){
+                        if(err){
+                            console.log("Error when removing comment("+ id +") from issue("+ this._id +");", err)
+                        }
+                    })
+                }
             }
         })
     })

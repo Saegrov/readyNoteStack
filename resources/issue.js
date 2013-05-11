@@ -68,7 +68,20 @@ exports.destroy = function(req, res){
                     if (err){
                         res.send(500, "Caught exception on model delete #2: "+ err)
                     } else {
-                        res.send(issue);
+                        Project.findById(req.params.project, function(err, project){
+                            if (err){
+                                res.send(500, "Caught exception on model delete #3: "+ err)
+                            } else {
+                                project.issues.remove(issue)
+                                project.save(function(err){
+                                    if(err){
+                                        res.send(500, "Caught exception on model save in issue.destroy: "+ err)
+                                    } else {
+                                        res.send(issue);
+                                    }
+                                })
+                            }
+                        })
                     }
                 })
             }
