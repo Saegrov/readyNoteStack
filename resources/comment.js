@@ -3,26 +3,30 @@ var Project = require('./schemas').Project,
     Comment = require('./schemas').Comment
 require('sugar')
 
-exports.index = function(req, res){
+exports.index = function(req, res, next){
     console.log("Got index[GET] request")
     Issue.findById(req.params.issue).populate('comments').exec(function(err, issue){
         if (err){
-            res.send(500, "Caught exception on index: "+ err)
+            next(err)
         } else {
-            res.send(issue.comments.map(function(comment){
-                return convertToRegularId(comment.toObject())
-            }))
+            if (!issue){
+                res.send(404, "Could not find issue with ID: "+req.params.issue)
+            } else {
+                res.send(issue.comments.map(function(comment){
+                    return convertToRegularId(comment.toObject())
+                }))
+            }
         }
     })
 }
 
-exports.create = function(req, res){
+exports.create = function(req, res, next){
     console.log("Got create[POST] request")
     Issue.findById(req.params.issue, function(err, issue){
         var comment = new Comment(convertToMongodbId(req.body))
         comment.save(function(err, doc){
             if(err){
-                res.send(500, "Caught exception on model save: "+ err)
+                next(err)
             } else {
                 issue.comments.push(comment)
                 issue.save(function(err, project){
@@ -33,11 +37,11 @@ exports.create = function(req, res){
     })
 }
 
-exports.show = function(req, res){
+exports.show = function(req, res, next){
     console.log("Got show[GET] request")
     Comment.findById(req.params.comment, function(err, comment){
         if (err){
-            res.send(500, 'Caught exception: ' + err)
+            next(err)
         } else {
             if(!comment){
                 res.send(404, "Could not find comment with ID: "+req.params.comment)
@@ -48,40 +52,40 @@ exports.show = function(req, res){
     })
 }
 
-exports.update = function(req, res){
+exports.update = function(req, res, next){
     console.log("Got update[PUT] request")
     Comment.update({_id: req.params.comment},
         req.body,
         function(err){
             if(err){
-                res.send(500, 'Caught exception: ' + err)
+                next(err)
             } else {
                 res.send(req.body)
             }
         })
 }
 
-exports.destroy = function(req, res){
+exports.destroy = function(req, res, next){
     console.log("Got destroy[delete] request")
     Comment.findById(req.params.comment, function(err, comment){
         if (err){
-            res.send(500, "Caught exception on model delete: "+ err)
+            next(err)
         } else {
             if(!comment){
                 res.send(404, "Could not find comment with ID: "+req.params.comment)
             } else {
                 comment.remove(function(err){
                     if (err){
-                        res.send(500, "Caught exception on model delete #2: "+ err)
+                        next(err)
                     } else {
                         Issue.findById(req.params.issue, function(err, issue){
                             if (err){
-                                res.send(500, "Caught exception on model delete #3: "+ err)
+                                next(err)
                             } else {
                                 issue.comments.remove(comment)
                                 project.save(function(err){
                                     if(err){
-                                        res.send(500, "Caught exception on model save in issue.destroy: "+ err)
+                                        next(err)
                                     } else {
                                         res.send(comment);
                                     }

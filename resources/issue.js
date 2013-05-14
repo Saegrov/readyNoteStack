@@ -2,10 +2,10 @@ var Project = require('./schemas').Project,
     Issue = require('./schemas').Issue
 require('sugar')
 
-exports.index = function(req, res){
+exports.index = function(req, res, next){
     Project.findById(req.params.project).populate('issues').exec(function(err, project){
         if(err){
-            res.send(500, "Caught exception on getting index: "+ err)
+            next(err)
         } else {
             res.send(project.issues.map(function(issue){
                 return convertToRegularId(issue.toObject())
@@ -14,13 +14,13 @@ exports.index = function(req, res){
     })
 }
 
-exports.create = function(req, res){
+exports.create = function(req, res, next){
     console.log("Got create[POST] request")
     Project.findById(req.params.project, function(err, project){
         var issue = new Issue(convertToMongodbId(req.body))
         issue.save(function(err, doc){
             if(err){
-                res.send(500, "Caught exception on model save: "+ err)
+                next(err)
             } else {
                 project.issues.push(issue)
                 project.save(function(err, project){
@@ -31,11 +31,11 @@ exports.create = function(req, res){
     })
 }
 
-exports.show = function(req, res){
+exports.show = function(req, res, next){
     console.log("Got show[GET] request")
     Issue.findById(req.params.issue, function(err, issue){
         if (err){
-            res.send(500, 'Caught exception: ' + err)
+            next(err)
         } else {
             if(!issue){
                 res.send(404, "Could not find issue with ID: "+req.params.issue)
@@ -46,40 +46,40 @@ exports.show = function(req, res){
     })
 }
 
-exports.update = function(req, res){
+exports.update = function(req, res, next){
     console.log("Got update[PUT] request")
     Issue.update({_id: req.params.issue},
         req.body,
         function(err){
             if(err){
-                res.send(500, 'Caught exception: ' + err)
+                next(err)
             } else {
                 res.send(req.body)
             }
         })
 }
 
-exports.destroy = function(req, res){
+exports.destroy = function(req, res, next){
     console.log("Got destroy[delete] request")
     Issue.findById(req.params.issue, function(err, issue){
         if (err){
-            res.send(500, "Caught exception on model delete: "+ err)
+            next(err)
         } else {
             if(!issue){
                 res.send(404, "Could not find issue with ID: "+req.params.issue)
             } else {
                 issue.remove(function(err){
                     if (err){
-                        res.send(500, "Caught exception on model delete #2: "+ err)
+                        next(err)
                     } else {
                         Project.findById(req.params.project, function(err, project){
                             if (err){
-                                res.send(500, "Caught exception on model delete #3: "+ err)
+                                next(err)
                             } else {
                                 project.issues.remove(issue)
                                 project.save(function(err){
                                     if(err){
-                                        res.send(500, "Caught exception on model save in issue.destroy: "+ err)
+                                        next(err)
                                     } else {
                                         res.send(issue);
                                     }
