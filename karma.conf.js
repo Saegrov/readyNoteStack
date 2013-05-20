@@ -1,19 +1,28 @@
 // Karma configuration
 
 // base path, that will be used to resolve files and exclude
-basePath = '';
+basePath = 'app';
+
+//Needed for karma to be able to process html files
+preprocessors = {
+  'views/*.html': 'html2js',
+  'views/**/*.html': 'html2js'
+};
+
+//frameworks = ['jasmine'];
 
 // list of files / patterns to load in the browser
 files = [
   JASMINE,
   JASMINE_ADAPTER,
-  'app/components/angular/angular.js',
-  'app/components/angular-mocks/angular-mocks.js',
-  'app/components/angular-resource/angular-resource.js',
-  'app/scripts/*.js',
-  'app/scripts/**/*.js',
-  'test/mock/**/*.js',
-  'test/spec/**/*.js'
+  'components/angular/angular.js',
+  'components/angular-mocks/angular-mocks.js',
+  'components/angular-resource/angular-resource.js',
+  'scripts/*.js',
+  'scripts/**/*.js',
+  'views/**/*.html',
+  '../test/mock/**/*.js',
+  '../test/spec/**/*.js'
 ];
 
 // list of files to exclude
@@ -37,7 +46,7 @@ colors = true;
 logLevel = LOG_INFO;
 
 // enable / disable watching file and executing tests whenever any file changes
-autoWatch = false;
+autoWatch = true;
 
 // Start these browsers, currently available:
 // - Chrome

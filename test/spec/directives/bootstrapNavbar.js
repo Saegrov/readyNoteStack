@@ -1,13 +1,29 @@
 'use strict';
 
 describe('Directive: bootstrapNavbar', function () {
+  var element, scope;
+
   beforeEach(module('readyNoteStackApp'));
 
-  var element;
+  beforeEach(module('views/navbar.html'));
 
-  it('should make hidden element visible', inject(function ($rootScope, $compile) {
+  beforeEach(inject(function ($rootScope, $compile) {
     element = angular.element('<bootstrap-navbar></bootstrap-navbar>');
-    element = $compile(element)($rootScope);
-    expect(element.text()).toBe('this is the bootstrapNavbar directive');
+    scope = $rootScope;
+
+    $compile(element)(scope);
+    scope.$digest();
+
   }));
+
+
+  it('should contain 3 clickable navigation items', inject(function ($compile, $rootScope) {
+    var navigations = element.find('li');
+    expect(navigations.length).toBe(3);
+    expect(navigations.eq(0).text()).toBe("Home");
+    expect(navigations.eq(1).text()).toBe("Projects");
+    expect(navigations.eq(2).text()).toBe("Issues");
+
+  }));
+
 });
