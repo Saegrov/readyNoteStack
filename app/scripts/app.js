@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('readyNoteStackApp', [])
+angular.module('readyNoteStackApp', ['ngResource'])
   .config(function ($routeProvider) {
     $routeProvider
       .when('/', {
