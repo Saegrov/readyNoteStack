@@ -2,5 +2,5 @@
 
 angular.module('readyNoteStackApp')
   .controller('MainCtrl', function ($scope) {
-      $scope.hello = 'asd';
-    });
+    $scope.hello = 'asd';
+  });
