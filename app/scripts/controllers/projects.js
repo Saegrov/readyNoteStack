@@ -1,17 +1,14 @@
 'use strict';
 
 angular.module('readyNoteStackApp')
-  .controller('ProjectsCtrl', function ($scope, $resource) {
+  .controller('ProjectsCtrl', function ($scope, projectService) {
     $scope.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
       'Karma'
     ];
 
-    $scope.Project = $resource('/projects/:projectId', {},
-      {'query': {method: 'GET', isArray: true}});
+    $scope.projects = projectService.query();
 
-
-    $scope.listProjects = $scope.Project.query();
 
   });

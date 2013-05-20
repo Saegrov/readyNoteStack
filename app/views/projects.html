@@ -1,9 +1,9 @@
 <div class="hero-unit">
     <h3>The projects!</h3>
 
-    <ul >
-        <li ng-repeat="project in listProjects" ng-show="project.name">
-            {{project.name}}
+    <ul>
+        <li ng-repeat="project in projects" ng-show="project.name">
+            <a href="#/projects/{{project.id}}">{{project.name}}</a>
         </li>
     </ul>
 

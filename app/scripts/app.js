@@ -11,6 +11,10 @@ angular.module('readyNoteStackApp', ['ngResource'])
         templateUrl: 'views/projects.html',
         controller: 'ProjectsCtrl'
       })
+      .when('/projects/:projectId', {
+        templateUrl: 'views/project-detail.html',
+        controller: 'ProjectDetailCtrl'
+      })
       .otherwise({
         redirectTo: '/'
       });
