@@ -6,13 +6,13 @@ describe('Service: projectService', function () {
   beforeEach(module('readyNoteStackApp'));
 
   // instantiate service
-  var projectService;
-  beforeEach(inject(function (_projectService_) {
-    projectService = _projectService_;
+  var Project;
+  beforeEach(inject(function (_Project_) {
+    Project = _Project_;
   }));
 
   it('should do something', function () {
-    expect(!!projectService).toBe(true);
+    expect(!!Project).toBe(true);
   });
 
 });
