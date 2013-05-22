@@ -1,31 +1,61 @@
 <div class="hero-unit">
-    <h3>New project</h3>
+    <div class="row">
+        <div class="span4"><h3>New project</h3>
 
-    <div class="control-group" ng-class="{success:'success', error:'error', empty:'info'}[nameExists()]">
+            <div class="control-group" ng-class="{success:'success', error:'error', empty:'info'}[nameExists()]">
 
-        <label class="control-label" for="inputInfo">Create a new project</label>
+                <!--<label class="control-label" for="inputInfo">Create a new project</label>-->
 
-        <div class="controls">
-            <input type="text" id="inputInfo" ng-model="projectName">
-            <button ng-click="createProject()" class="btn"
-                    ng-class="{success:'btn-success', empty:'btn-info disabled'}[nameExists()]">Create!
-            </button>
+                <div class="controls">
+                    <input type="text" id="inputInfo" ng-model="projectNameInputField"> <br>
+                    <button ng-click="createProject()" class="btn"
+                            ng-class="{success:'btn-success', empty:'btn-info disabled', error: 'btn-danger disabled'}[nameExists()]">
+                        Create!
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="span3">
+            <h3>OrderBy</h3>
+
+            <div class="btn-group">
+                <button ng-click="predicate = 'name'" class="btn">Name</button>
+                <button ng-click="predicate = 'cratedDate'" class="btn">Date</button>
+                <button ng-click="predicate = ''" class="btn">None</button>
+                <br>
+                <br>
+            </div>
+
 
         </div>
+        <div class="span3 pull-right">
+            <h3> Search:</h3>
+            <input type="text" ng-model="searchText.name"> <br>
+        </div>
+    </div>
+
+    <div ng-switch="nameExists()">
+        <div ng-switch-when="error">Project name already exists!</div>
+        <div ng-switch-when="empty">Please type a project name!</div>
+        <div ng-switch-when="success">Name is valid! Click create to create the project!</div>
     </div>
 </div>
 
 <div class="row">
 
-    <div class="span4" ng-repeat="project in projects">
+    <div class="span4" ng-repeat="project in projects | filter:searchText | orderBy:predicate">
         <h3>{{project.name}}</h3>
 
         <p>This is some static text with a description of the project, jatta jatta jatta! There are currently
             {{project.issues.length}} issues in this project</p>
 
+        <p>{{project.cratedDate | date: 'medium'}}</p>
+
         <p>
             <a class="btn btn-info" href="#/projects/{{project.id}}">View details &raquo;</a>
-            <button ng-click="deleteProject(project.id)" class="btn btn-danger pull-right"
+            <button ng-click="deleteProject(project)" class="btn btn-danger pull-right"
                     href="#/projects/{{project.id}}">Delete project &raquo;</button>
         </p>
     </div>

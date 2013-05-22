@@ -1,8 +1,9 @@
 'use strict';
 
 angular.module('readyNoteStackApp')
-  .factory('Project', function ($resource) {
+  .factory('ProjectRestService', function ($resource) {
     return $resource('projects/:projectId', {}, {
-      get: {method: 'GET', params: {projectId: 'projects'}, isArray: false}
+      get: {method: 'GET', params: {projectId: 'projects'}, isArray: false},
+      del: {method: 'DELETE', params: {projectId: 'projects'}, isArray: false}
     });
   });
